@@ -1,16 +1,23 @@
 
 def main():
     debug = False
-    if debug == False:
+    if debug == True:
         top = input("top of equation")
         bottom = input("bottom of equation")
         bottom = split_terms(bottom)
         print(bottom)
     else:
-        test = find_inter_value("s+3")
-        test = find_inter_value(test)
-        print(test)
-        print("extracted value",extract_zero_value(test))
+        top = ["s+1"]
+        bottom = "(s+4)(s+2)(s+3)"
+        bottom = split_terms(bottom)
+        print("bottom",bottom)
+        # find inter values
+        inter_values = []
+        for i in range(len(bottom)):
+
+            inter_values.append(extract_zero_value(bottom[i]))
+        print("inter values",inter_values)
+        solver(top,bottom,inter_values[0])
 
 # auxillary stuff
 def quadratic():
@@ -44,15 +51,29 @@ def extract_zero_value(values):
     sign = 0 # one being positive
     for i in range(len(values)):
         if values[i] == '+':
-            print("found a positive value")
+
             sign = 1
         if values[i].isdigit():
-            print("found a number ")
+
             if sign > 0:
-                print("make it negative")
+
                 return int(values[i]) * -1
             else:
-                print("leave it positive")
+
                 return values[i]
 
+    if len(values) == 1:
+        return 0
+
+def solver(top,bottom,current_inter_value): # the solver takes all denom and numerator
+    for i in range(len(bottom)):
+
+        try:
+            top[i] = top[i].replace("s",str(current_inter_value))
+            print(top[i])
+        except:
+            print("index out of range ")
+
+        bottom[i] = bottom[i].replace("s",str(current_inter_value))
+        print("bottom stuff with entered inter value ",bottom[i])
 main()
