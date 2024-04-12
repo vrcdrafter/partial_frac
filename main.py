@@ -7,8 +7,8 @@ def main():
         bottom = split_terms(bottom)
         print(bottom)
     else:
-        top = ["s+1"]
-        bottom = "(s+4)(s+2)(s+3)"
+        top = ["s+3"]
+        bottom = "(s)(s+2)(s+5)"
         bottom = split_terms(bottom)
         print("bottom",bottom)
         # find inter values
@@ -17,7 +17,9 @@ def main():
 
             inter_values.append(extract_zero_value(bottom[i]))
         print("inter values",inter_values)
-        solver(top,bottom,inter_values[0])
+        print(solver(top,bottom,inter_values[2]))
+
+
 
 # auxillary stuff
 def quadratic():
@@ -67,13 +69,25 @@ def extract_zero_value(values):
 
 def solver(top,bottom,current_inter_value): # the solver takes all denom and numerator
     for i in range(len(bottom)):
-
         try:
             top[i] = top[i].replace("s",str(current_inter_value))
-            print(top[i])
+            print("top solver", top[i])
         except:
-            print("index out of range ")
-
+            pass
         bottom[i] = bottom[i].replace("s",str(current_inter_value))
-        print("bottom stuff with entered inter value ",bottom[i])
+        #toss out the zero entry
+        if eval(bottom[i]) == 0:
+            bottom[i] = 1
+
+        else:
+
+            bottom[i] = eval(bottom[i])
+            print(bottom[i])
+
+    print("multiply all these ",bottom)
+    for i in range(len(bottom)):
+        try:
+            bottom[0] = bottom[0] * bottom[i+1] # this is a problem
+        except:
+            return str(eval(top[0]))+"/"+str(bottom[0])
 main()
