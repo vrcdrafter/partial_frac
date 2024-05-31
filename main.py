@@ -7,25 +7,33 @@ def main():
         bottom = split_terms(bottom)
         print(bottom)
     else:
-        top = ["s+3"]
-        bottom = "(s)(s+2)(s+5)"
-        bottom = split_terms(bottom)
-        print("bottom",bottom)
-        # find inter values
-        inter_values = []
-        for i in range(len(bottom)):
+        top = ["s+1"]
+        bottom = "(s)(s+2)^2"
 
-            inter_values.append(extract_zero_value(bottom[i]))
-        print("inter values",inter_values)
-        print(solver(top,bottom,inter_values[2]))
+        # do a check to see if complex roots
+        if "^" in bottom:
+            print("has one distinct root")
+            # find inter values
+            bottom = split_terms(bottom)
+            print(bottom)
+        else:
 
+            bottom = split_terms(bottom)
+
+            # find inter values
+            inter_values = []
+            for i in range(len(bottom)):
+
+                inter_values.append(extract_zero_value(bottom[i]))
+
+            print(solver(top, bottom, inter_values[0])) # works but you cant call is sucessivly
+            print(solver(top, bottom, inter_values[1]))
+            print(solver(top, bottom, inter_values[2]))
 
 
 # auxillary stuff
-def quadratic():
-    pass
-def split_terms(term):
-    # check for form if ()() or x2+x3+x4
+
+def split_terms(term): # this breaks (x)(x+2) into terms x and X+2
     arr = term.split('(')
     for i in range(len(arr)):
         arr[i] = arr[i].strip(')')
@@ -33,7 +41,6 @@ def split_terms(term):
             print("found emtpy value ")
     arr.remove('')
     return arr
-        # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 def find_inter_value(arg):
     # break into parts in order
     chars = [char for char in arg]
@@ -67,27 +74,27 @@ def extract_zero_value(values):
     if len(values) == 1:
         return 0
 
-def solver(top,bottom,current_inter_value): # the solver takes all denom and numerator
-    for i in range(len(bottom)):
+def solver(top,bottom,current_inter_value): # the solver takes all denom and numerator ,
+    top_s = []
+    bottom_s = []
+    top_s = top[:] #  creates a barrier for the lists so the origional does not get modified .
+    bottom_s = bottom[:] # so this is bizzare but it seems to keep the list local, you need the ":"
+
+    for i in range(len(bottom_s)):
+
         try:
-            top[i] = top[i].replace("s",str(current_inter_value))
-            print("top solver", top[i])
+            top_s[i] = top_s[i].replace("s",str(current_inter_value))
         except:
             pass
-        bottom[i] = bottom[i].replace("s",str(current_inter_value))
+        bottom_s[i] = bottom_s[i].replace("s",str(current_inter_value))
         #toss out the zero entry
-        if eval(bottom[i]) == 0:
-            bottom[i] = 1
-
+        if eval(bottom_s[i]) == 0:
+            bottom_s[i] = 1
         else:
-
-            bottom[i] = eval(bottom[i])
-            print(bottom[i])
-
-    print("multiply all these ",bottom)
-    for i in range(len(bottom)):
+            bottom_s[i] = eval(bottom_s[i])
+    for i in range(len(bottom_s)):
         try:
-            bottom[0] = bottom[0] * bottom[i+1] # this is a problem
+            bottom_s[0] = bottom_s[0] * bottom_s[i+1] # this is a problem
         except:
-            return str(eval(top[0]))+"/"+str(bottom[0])
+            return str(eval(top_s[0]))+"/"+str(bottom_s[0])
 main()
